@@ -10,12 +10,13 @@ show_help() {
 Usage:   ${0##*/}   [-h|--help] [-cs|--phpcs] [-js|--javascript] [-ac|--auto-correct] [-v|--verbose] [FILE|DIRECTORY]
 Check Thunder code style guidelines for file or directory and optionally make auto correction
 
-    -h, --help              display this help
-    -i, --init              init required code guideline files
+    -h,  --help             display this help
+    -i,  --init             init required code guideline files
+    -fi, --force-init       force initialization process
     -cs, --phpcs            use PHP Code Sniffer with Drupal code style standard
     -js, --javascript       use ESLint with usage of project defined code standard
     -ac, --auto-correct     apply auto formatting with validation of code styles
-    -v, --verbose           verbose mode
+    -v,  --verbose          verbose mode
 EOF
 
     exit 1
@@ -68,18 +69,23 @@ init_guideline_files() {
         exit 1
     fi
 
+    COPY_FORCE_OPTION=""
+    if [ $FORCED_COMMAND == 1 ]; then
+        COPY_FORCE_OPTION="-f"
+    fi
+
     echo "Init Thunder Guidelines"
 
-    if [ ! -f $CHECK_DIR/.eslintrc ]; then
-        echo "... symlink .eslintrc"
-        ln -s $SCRIPT_PATH/../configs/.eslintrc $CHECK_DIR/.eslintrc
+    if [ $FORCED_COMMAND == 1 ] || [ ! -f $CHECK_DIR/.eslintrc ]; then
+        echo "... copy .eslintrc"
+        cp $COPY_FORCE_OPTION $SCRIPT_PATH/../configs/.eslintrc $CHECK_DIR/.eslintrc
     else
         echo "... skipping init for .eslintrc"
     fi
 
-    if [ ! -f $CHECK_DIR/.eslintignore ]; then
-        echo "... symlink .eslintignore"
-        ln -s $SCRIPT_PATH/../configs/.eslintignore $CHECK_DIR/.eslintignore
+    if [ $FORCED_COMMAND == 1 ] || [ ! -f $CHECK_DIR/.eslintignore ]; then
+        echo "... copy .eslintignore"
+        cp $COPY_FORCE_OPTION $SCRIPT_PATH/../configs/.eslintignore $CHECK_DIR/.eslintignore
     else
         echo "... skipping init for .eslintignore"
     fi
@@ -106,6 +112,7 @@ CODER_EXIT_STATUS=0
 CODER_IGNORE_PATTERNS="--ignore=*/vendor/*"
 
 MAKE_INIT=0
+FORCED_COMMAND=0
 CHECK_DIR="."
 
 # parse command arguments
@@ -113,6 +120,10 @@ for i in "$@"; do
     case $i in
         -h | -\? | --help)
             show_help
+        ;;
+        -fi | --force-init)
+            FORCED_COMMAND=1
+            MAKE_INIT=1
         ;;
         -i | --init)
             MAKE_INIT=1
