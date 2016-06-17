@@ -4,24 +4,48 @@
 # Check Thunder code style guidelines and apply changes
 #
 
-# Usage info
+### initialize variables ###
+ESLINT_CHECK=0
+ESLINT_DISPLAY_OPTION=""
+ESLINT_AUTO_CORRECT=0
+ESLINT_EXIT_STATUS=0
+
+CODER_CHECK=0
+CODER_DISPLAY_OPTION="--report=summary"
+CODER_AUTO_CORRECT=0
+CODER_EXIT_STATUS=0
+CODER_IGNORE_PATTERNS="--ignore=*/vendor/*"
+
+MAKE_INIT=0
+FORCED_COMMAND=0
+CHECK_DIR="."
+
+### Functions ###
+
+# print usage info
 show_help() {
     cat << EOF
 Usage:   ${0##*/}   [-h|--help] [-cs|--phpcs] [-js|--javascript] [-ac|--auto-correct] [-v|--verbose] [FILE|DIRECTORY]
 Check Thunder code style guidelines for file or directory and optionally make auto correction
 
-    -h,  --help             display this help
+Init configuration:
     -i,  --init             init required code guideline files
     -fi, --force-init       force initialization process
+
+Using checking:
     -cs, --phpcs            use PHP Code Sniffer with Drupal code style standard
     -js, --javascript       use ESLint with usage of project defined code standard
     -ac, --auto-correct     apply auto formatting with validation of code styles
+
+Miscellaneous:
     -v,  --verbose          verbose mode
+    -h,  --help             display this help
 EOF
 
     exit 1
 }
 
+# check requirements for proper functioning of eslint (javascript linting)
 check_eslint_requirements() {
     if ! type eslint > /dev/null 2>&1; then
         echo "\033[1m\033[31mERR: Thunder code style guideline checker requires command: eslint - please install it.\033[0m"
@@ -29,15 +53,24 @@ check_eslint_requirements() {
     fi
 
     # check used eslint config
-    eslint_config=$(eslint --print-config $CHECK_DIR)
-    eslint_config_size=${#eslint_config}
+    local ESLINT_CONFIG=$(eslint --print-config $CHECK_DIR)
+    local ESLINT_CONFIG_SIZE=${#ESLINT_CONFIG}
 
-    if [ $eslint_config_size -lt 25000 ]; then
+    if [ $ESLINT_CONFIG_SIZE -lt 25000 ]; then
         echo "WARN: Thunder code style guideline is not able to detect eslint configuration files.\nPlease verify it or execute: $0 --init <project root directory>"
+        exit 1
+    fi
+
+    # check is used eslint config same as eslint config provided by script
+    local SCRIPT_PATH=$(get_script_path)
+    local PROVIDED_ESLINT_CONFIG=$(eslint --print-config -c $SCRIPT_PATH/../configs/.eslintrc $CHECK_DIR)
+    if [ "x${ESLINT_CONFIG}x" != "x${PROVIDED_ESLINT_CONFIG}x" ]; then
+        echo "WARN: Detected eslint code style configuration is not same as configuration provided with this script."
         exit 1
     fi
 }
 
+# check requirements for proper functioning of phpcs (PHP Code Sniffer)
 check_phpcs_requirements() {
     if ! type phpcs > /dev/null 2>&1 || ! type phpcbf > /dev/null 2>&1; then
         echo "\033[1m\033[31mERR: Thunder code style guideline checker requires command: phpcs and phpcbf - please install them.\033[0m"
@@ -45,31 +78,40 @@ check_phpcs_requirements() {
     fi
 
     # check required phpcs standards
-    supported_standards=$(phpcs -i)
+    local SUPPORTED_STANDARDS=$(phpcs -i)
 
-    if ! [[ $supported_standards == *"Drupal"* ]] || ! [[ $supported_standards == *"DrupalPractice"* ]]; then
+    if ! [[ $SUPPORTED_STANDARDS == *"Drupal"* ]] || ! [[ $SUPPORTED_STANDARDS == *"DrupalPractice"* ]]; then
         echo "WARN: Thunder code style guideline is not able to detect required phpcs code standards.\nPlease verify is Drupal/Coder project installed, if not check installation guide for it."
         exit 1
     fi
 }
 
-# Init required thunder code guidelines files
-init_guideline_files() {
-    # get exact location of script - that will be used as path to get required configuration files
-    SOURCE="${BASH_SOURCE[0]}"
+# get exact location of script - that will be used as path to get related configuration files
+get_script_path() {
+    local DIR
+    local SOURCE
+
+    local SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
         DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
         SOURCE="$(readlink "$SOURCE")"
         [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
     done
-    SCRIPT_PATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    local SCRIPT_PATH="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+    echo $SCRIPT_PATH
+}
+
+# init required Thunder code guidelines files
+init_guideline_files() {
+    local SCRIPT_PATH=$(get_script_path)
 
     if [ ! -f $SCRIPT_PATH/../configs/.eslintrc ] || [ ! -f $SCRIPT_PATH/../configs/.eslintignore ]; then
         echo "WARN: Thunder code style guideline is not able to detect required files for initailization."
         exit 1
     fi
 
-    COPY_FORCE_OPTION=""
+    local COPY_FORCE_OPTION=""
     if [ $FORCED_COMMAND == 1 ]; then
         COPY_FORCE_OPTION="-f"
     fi
@@ -99,21 +141,7 @@ init_guideline_files() {
     echo "DONE"
 }
 
-# initialize variables
-ESLINT_CHECK=0
-ESLINT_DISPLAY_OPTION=""
-ESLINT_AUTO_CORRECT=0
-ESLINT_EXIT_STATUS=0
-
-CODER_CHECK=0
-CODER_DISPLAY_OPTION="--report=summary"
-CODER_AUTO_CORRECT=0
-CODER_EXIT_STATUS=0
-CODER_IGNORE_PATTERNS="--ignore=*/vendor/*"
-
-MAKE_INIT=0
-FORCED_COMMAND=0
-CHECK_DIR="."
+### Script ###
 
 # parse command arguments
 for i in "$@"; do
@@ -202,4 +230,4 @@ if [ $CODER_EXIT_STATUS -ne 0 ] || [ $ESLINT_EXIT_STATUS -ne 0 ]; then
     exit 1
 fi
 
-# End of file
+# end of file
