@@ -201,16 +201,16 @@ if [ $CODER_CHECK == 1 ]; then
     check_phpcs_requirements
 
     if [ $CODER_AUTO_CORRECT == "1" ]; then
-        phpcbf --standard=Drupal $CODER_IGNORE_PATTERNS $CHECK_DIR
-        phpcbf --standard=DrupalPractice $CODER_IGNORE_PATTERNS $CHECK_DIR
+        phpcbf --standard=Drupal --extensions=php,module,inc,install,test,profile,theme $CODER_IGNORE_PATTERNS $CHECK_DIR
+        phpcbf --standard=DrupalPractice --extensions=php,module,inc,install,test,profile,theme $CODER_IGNORE_PATTERNS $CHECK_DIR
     fi
 
     # check best Drupal coding standard - this option will defined exit status
-    phpcs -p --standard=Drupal $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
+    phpcs -p --standard=Drupal --extensions=php,module,inc,install,test,profile,theme $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
     CODER_EXIT_STATUS=$?
 
     # check best Drupal practices coding standard
-    phpcs -p --standard=DrupalPractice $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
+    phpcs -p --standard=DrupalPractice --extensions=php,module,inc,install,test,profile,theme $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
 fi
 
 if [ $ESLINT_CHECK == 1 ]; then
