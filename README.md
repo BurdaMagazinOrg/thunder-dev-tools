@@ -9,7 +9,7 @@ Thunder code style guidelines are in agreement with Drupal code styles. For gene
 #### Drupal Coder
 In order that Drupal Coder works, following steps should be executed.
 
-1. Install Composer (***** this step can be skipped if composer already exists on system)
+1. Install Composer (* this step can be skipped if composer already exists on system)
 * Please follow [guide](https://getcomposer.org/download/) on official page
 2. Install Drupal/Coder in global Composer directory
 * Please follow [installation guide](https://packagist.org/packages/drupal/coder) on Packagist
@@ -28,7 +28,7 @@ Additionally both commands can be used with option ```--standard=DrupalPractice`
 
 In order that ESLint works, following steps should be executed
 
-1. Install Node.js (***** this step can be skipped if Node.js already exists on system)
+1. Install Node.js (* this step can be skipped if Node.js already exists on system)
 * Official [guide](https://nodejs.org/en/download/package-manager/) from Node.js page should be followed
 2. Install ESLint
 ```bash
@@ -74,7 +74,7 @@ vendor/bin/check-guidelines.sh --phpcs --javascript --auto-correct
 4.  In Configuration dialog add new configuration or edit existing **Local**. Set correct path for **phpcs** by pressing edit button [...]. Path should be: ```<composer home directory>/vendor/bin/phpcs``` and save that settings for Code Sniffer
 5. To configure usage of PHP Code Sniffer select ```Editor | Inspections```
 6. Option **PHP Code Sniffer validation** should already be filtered by Search. Enable that option.
-7. And for that validation procedure change **Coding standard** option to **Drupal**.
+7. And for that validation procedure change **Coding standard** option to **Drupal**. (* sometimes PHPStorm doesn't recognize that coding standard has been changed if **Drupal** is preselected. It's sufficient just to select other coding standard and then put back to **Drupal**) 
 
 After these settings are saved in PHPStorm warnings with prefix **phpcs:** will be displayed in editor.
 

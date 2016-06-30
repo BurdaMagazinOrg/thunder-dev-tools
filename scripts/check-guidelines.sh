@@ -30,7 +30,7 @@ Check Thunder code style guidelines for file or directory and optionally make au
 
 Init configuration:
     -i,  --init             init required code guideline files
-    -fi, --force-init       force initialization process
+    -u,  --update           update required code guideline files
 
 Using checking:
     -cs, --phpcs            use PHP Code Sniffer with Drupal code style standard
@@ -149,7 +149,7 @@ for i in "$@"; do
         -h | -\? | --help)
             show_help
         ;;
-        -fi | --force-init)
+        -u | --update)
             FORCED_COMMAND=1
             MAKE_INIT=1
         ;;
