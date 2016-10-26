@@ -93,9 +93,9 @@ Default settings can be preserved. ESLint will automatically search for installe
 
 #### Git Pre Commit Hook
 
-To check is code valid before commit, git pre commit hook can be used with execution of thunder guideline checker script. Create script file ```.git/hook/pre-commit``` in your project folder, with following content:
+To check is code valid before commit, git pre commit hook can be used with execution of thunder guideline checker script. Create script file ```.git/hooks/pre-commit``` in your project folder, with following content:
 ```bash
 #!/bin/sh
 vendor/bin/check-guidelines.sh --phpcs --javascript
 ```
-That will automatically validate files before commit and display possible problems and additionally commit will not be executed unless everything is correct and valid.
+Make sure that the file is executable. That will automatically validate files before commit and display possible problems and additionally commit will not be executed unless everything is correct and valid.
