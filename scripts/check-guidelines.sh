@@ -14,7 +14,7 @@ CODER_CHECK=0
 CODER_DISPLAY_OPTION="--report=summary"
 CODER_AUTO_CORRECT=0
 CODER_EXIT_STATUS=0
-CODER_IGNORE_PATTERNS="--ignore=*/vendor/*,*/docroot/*"
+CODER_IGNORE_PATTERNS="--ignore=*/vendor/*,*/docroot/*,*/libraries/*,*.md,thunder.info.yml"
 
 MAKE_INIT=0
 FORCED_COMMAND=0
@@ -63,7 +63,7 @@ check_eslint_requirements() {
 
     # check is used eslint config same as eslint config provided by script
     local SCRIPT_PATH=$(get_script_path)
-    local PROVIDED_ESLINT_CONFIG=$(eslint --print-config -c $SCRIPT_PATH/../configs/.eslintrc $CHECK_DIR)
+    local PROVIDED_ESLINT_CONFIG=$(eslint --print-config $SCRIPT_PATH/../configs/.eslintrc -c $SCRIPT_PATH/../configs/.eslintrc)
     if [ "x${ESLINT_CONFIG}x" != "x${PROVIDED_ESLINT_CONFIG}x" ]; then
         echo "WARN: Detected eslint code style configuration is not same as configuration provided with this script."
         exit 1
