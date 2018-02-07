@@ -17,10 +17,10 @@ In order that Drupal Coder works, following steps should be executed.
 Usage from command line:
 ```bash
 # check Code for Drupal coding standards
-phpcs --standard=Drupal -p <project root directory>
+phpcs --standard=Drupal --extensions=php,module,inc,install,test,profile,theme '--ignore=*.md' -p <project root directory>
 
 # autocorrect code for Drupal coding standards
-phpcbf --standard=Drupal <project root directory>
+phpcbf --standard=Drupal --extensions=php,module,inc,install,test,profile,theme '--ignore=*.md' <project root directory>
 ```
 Additionally both commands can be used with option ```--standard=DrupalPractice``` for checking defined Drupal best practices.
 
