@@ -217,9 +217,9 @@ if [ $ESLINT_CHECK == 1 ]; then
     check_eslint_requirements
 
     if [ $ESLINT_AUTO_CORRECT == 1 ]; then
-        eslint $ESLINT_DISPLAY_OPTION $ESLINT_AUTO_CORRECT --fix $CHECK_DIR
+        eslint $ESLINT_DISPLAY_OPTION --fix $CHECK_DIR
     else
-        eslint $ESLINT_DISPLAY_OPTION $ESLINT_AUTO_CORRECT $CHECK_DIR
+        eslint $ESLINT_DISPLAY_OPTION $CHECK_DIR
     fi
     ESLINT_EXIT_STATUS=$?
 fi
