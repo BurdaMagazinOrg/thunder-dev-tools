@@ -13,7 +13,8 @@ ESLINT_EXIT_STATUS=0
 CODER_CHECK=0
 CODER_DISPLAY_OPTION="--report=summary"
 CODER_AUTO_CORRECT=0
-CODER_EXIT_STATUS=0
+CODER_EXIT_STATUS_DRUPAL=0
+CODER_EXIT_STATUS_DRUPAL_PRACTICE=0
 CODER_IGNORE_PATTERNS="--ignore=*/vendor/*,*/docroot/*,*/libraries/*,*.md,thunder.info.yml"
 
 MAKE_INIT=0
@@ -207,10 +208,11 @@ if [ $CODER_CHECK == 1 ]; then
 
     # check best Drupal coding standard - this option will defined exit status
     phpcs -p --standard=Drupal --extensions=php,module,inc,install,test,profile,theme $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
-    CODER_EXIT_STATUS=$?
+    CODER_EXIT_STATUS_DRUPAL=$?
 
     # check best Drupal practices coding standard
     phpcs -p --standard=DrupalPractice --extensions=php,module,inc,install,test,profile,theme $CODER_DISPLAY_OPTION $CODER_IGNORE_PATTERNS $CHECK_DIR
+    CODER_EXIT_STATUS_DRUPAL_PRACTICE=$?
 fi
 
 if [ $ESLINT_CHECK == 1 ]; then
@@ -224,7 +226,7 @@ if [ $ESLINT_CHECK == 1 ]; then
     ESLINT_EXIT_STATUS=$?
 fi
 
-if [ $CODER_EXIT_STATUS -ne 0 ] || [ $ESLINT_EXIT_STATUS -ne 0 ]; then
+if [ $CODER_EXIT_STATUS_DRUPAL -ne 0 ] || [ $CODER_EXIT_STATUS_DRUPAL_PRACTICE -ne 0 ] || [ $ESLINT_EXIT_STATUS -ne 0 ]; then
     echo "\033[1m\033[31m=== Some Coding styles have to be corrected to fulfill Thunder code style guidelines ===\033[0m"
 
     exit 1
